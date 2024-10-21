@@ -25,8 +25,9 @@ mongoose
     console.log("db connection failed", err);
   });
 
-app.listen(5000, () => {
-  console.log("server on 5000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 // 1. 회원가입
