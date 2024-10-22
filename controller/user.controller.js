@@ -24,16 +24,19 @@ userController.createUser = async (req, res) => {
 userController.loginWithEmail = async (req, res) => {
   try {
     const { email, password } = req.body;
-    // => get()은 req.body사용 불가
     const user = await User.findOne({ email: email });
-    if (user) {
-      const isMatch = bcrypt.compareSync(password, user.password);
-      if (isMatch) {
-        const token = user.generateToken();
-        return res.status(200).json({ status: "ok", user, token });
-      } else {
-        throw new Error("아이디 또는 비밀번호가 일치하지 않습니다.");
-      }
+
+    // 사용자가 없을 경우 오류 처리 추가
+    if (!user) {
+      throw new Error("등록되지 않은 이메일입니다.");
+    }
+
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (isMatch) {
+      const token = user.generateToken();
+      return res.status(200).json({ status: "ok", user, token });
+    } else {
+      throw new Error("아이디 또는 비밀번호가 일치하지 않습니다.");
     }
   } catch (err) {
     res.status(400).json({ status: "fail", message: err.message });
