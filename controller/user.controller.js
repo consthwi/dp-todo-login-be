@@ -25,12 +25,12 @@ userController.loginWithEmail = async (req, res) => {
   try {
     const { email, password } = req.body;
     // => get()은 req.body사용 불가
-    const joinedUser = await User.findOne({ email: email });
-    if (joinedUser) {
-      const isMatch = bcrypt.compareSync(password, joinedUser.password);
+    const user = await User.findOne({ email: email });
+    if (user) {
+      const isMatch = bcrypt.compareSync(password, user.password);
       if (isMatch) {
-        const token = joinedUser.generateToken();
-        return res.status(200).json({ status: "ok", joinedUser, token });
+        const token = user.generateToken();
+        return res.status(200).json({ status: "ok", user, token });
       } else {
         throw new Error("아이디 또는 비밀번호가 일치하지 않습니다.");
       }
